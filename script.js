@@ -41,17 +41,92 @@ const banglaData = [
 ];
 
 /*
-  Offline fallback word bank — used when API is unavailable.
-  Words are grouped in sets of 5 so we can rotate them.
+  ═══════════════════════════════════════════════════
+  BUILT-IN WORD BANK (100+ শব্দ)
+  API ছাড়াও এই শব্দগুলো ব্যবহার হবে।
+  প্রতিবার বোতাম চাপলে নতুন ৫টি শব্দ দেখাবে।
+  শব্দগুলো category অনুযায়ী সাজানো।
+  ═══════════════════════════════════════════════════
 */
-const fallbackWordSets = [
-  ['আম','জল','মাছ','গরু','বই'],
-  ['ফুল','পাখি','চাঁদ','নদী','ঘর'],
-  ['কলা','লাল','রং','দই','উট'],
-  ['মাটি','পথ','কাক','বন','ধান'],
-  ['রাত','দিন','সূর্য','বায়ু','মেঘ'],
+const WORD_BANK = [
+  /* ফল */
+  ['আম','জাম','কলা','পেয়ারা','লিচু'],
+  ['আপেল','নাশপাতি','তরমুজ','কমলা','আনারস'],
+  ['আঙুর','বেল','কুল','পেঁপে','বাতাবি'],
+
+  /* প্রাণী */
+  ['গরু','ছাগল','ঘোড়া','হাতি','বাঘ'],
+  ['মাছ','পাখি','কুকুর','বিড়াল','খরগোশ'],
+  ['হরিণ','ভালুক','শিয়াল','বানর','ময়ূর'],
+  ['কাক','ময়না','টিয়া','চিল','বাজ'],
+
+  /* প্রকৃতি */
+  ['নদী','পাহাড়','সমুদ্র','বন','মাঠ'],
+  ['ফুল','পাতা','গাছ','ঘাস','লতা'],
+  ['রাত','দিন','ভোর','সন্ধ্যা','দুপুর'],
+  ['বৃষ্টি','বাতাস','মেঘ','রোদ','শিশির'],
+  ['চাঁদ','সূর্য','তারা','আকাশ','মাটি'],
+
+  /* খাবার */
+  ['ভাত','রুটি','দুধ','ডিম','মাংস'],
+  ['ডাল','সবজি','তরকারি','মিষ্টি','পিঠা'],
+  ['চা','পানি','জুস','শরবত','দই'],
+
+  /* শরীর */
+  ['মাথা','চোখ','নাক','কান','মুখ'],
+  ['হাত','পা','আঙুল','চুল','দাঁত'],
+
+  /* রং */
+  ['লাল','নীল','সবুজ','হলুদ','কমলা'],
+  ['সাদা','কালো','বেগুনি','গোলাপি','বাদামি'],
+
+  /* বাড়ি ও জিনিস */
+  ['ঘর','দরজা','জানালা','ছাদ','মেঝে'],
+  ['চেয়ার','টেবিল','বিছানা','বালিশ','কম্বল'],
+  ['বই','কলম','খাতা','ব্যাগ','পেন্সিল'],
+  ['ঘড়ি','আয়না','চামচ','থালা','গ্লাস'],
+
+  /* মানুষ ও পরিবার */
+  ['মা','বাবা','দাদা','দাদি','নানা'],
+  ['ভাই','বোন','চাচা','মামা','খালা'],
+  ['বন্ধু','শিক্ষক','ডাক্তার','কৃষক','জেলে'],
+
+  /* যানবাহন */
+  ['নৌকা','গাড়ি','বাস','ট্রেন','বিমান'],
+  ['রিকশা','সাইকেল','ট্রাক','জাহাজ','হেলিকপ্টার'],
+
+  /* সংখ্যা ও আকার */
+  ['এক','দুই','তিন','চার','পাঁচ'],
+  ['ছয়','সাত','আট','নয়','দশ'],
+  ['বড়','ছোট','লম্বা','খাটো','মোটা'],
+
+  /* ক্রিয়া / কাজ */
+  ['খাই','পড়ি','লিখি','খেলি','ঘুমাই'],
+  ['হাঁটি','দৌড়াই','সাঁতার','গান','নাচ'],
 ];
+
+/* Shuffle array (Fisher-Yates) so words feel random each session */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* Shuffled copy used at runtime */
+let shuffledBank = shuffleArray(WORD_BANK);
 let fallbackIndex = 0;
+
+/* Always pick the next unused set; reshuffle when exhausted */
+function getNextWordSet() {
+  if (fallbackIndex >= shuffledBank.length) {
+    shuffledBank = shuffleArray(WORD_BANK);
+    fallbackIndex = 0;
+  }
+  return shuffledBank[fallbackIndex++];
+}
 
 
 /* ─────────────────────────────────────────
@@ -136,12 +211,14 @@ async function generateWords() {
   document.getElementById('error-box').classList.add('hidden');
   document.getElementById('words-output').innerHTML = '';
 
-  // If no API key, use offline fallback immediately
+  // If no API key, show built-in words immediately
   if (!GEMINI_API_KEY) {
     setTimeout(() => {
       document.getElementById('loading-spinner').classList.add('hidden');
-      useFallback('API Key দেওয়া নেই — অফলাইন শব্দ দেখানো হচ্ছে।');
-    }, 500);
+      displayWords(getNextWordSet());
+      // Hide any old error box
+      document.getElementById('error-box').classList.add('hidden');
+    }, 300);
     return;
   }
 
@@ -154,7 +231,7 @@ async function generateWords() {
   try {
     const apiUrl =
       'https://generativelanguage.googleapis.com/v1beta/models/' +
-      'gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
+      'gemini-1.5-flash-8b:generateContent?key=' + GEMINI_API_KEY;
 
     const res = await fetch(apiUrl, {
       method: 'POST',
@@ -212,17 +289,20 @@ async function generateWords() {
 
 /* Show next set of fallback words with an info message */
 function useFallback(reason) {
-  const words = fallbackWordSets[fallbackIndex % fallbackWordSets.length];
-  fallbackIndex++;
+  const words = getNextWordSet();
   displayWords(words);
 
-  // Show a soft info message (not a red error)
+  // Show a soft yellow info box (not scary red)
   const box = document.getElementById('error-box');
   box.style.background = '#fff8e1';
   box.style.borderColor = '#ffd700';
   box.style.color = '#7b5800';
   box.classList.remove('hidden');
-  box.innerHTML = `ℹ️ ${reason}`;
+  // Clean up verbose quota messages — show simple Bangla tip
+  const isQuota = reason.includes('quota') || reason.includes('429') || reason.includes('exceeded');
+  box.innerHTML = isQuota
+    ? '📚 অফলাইন শব্দ দেখানো হচ্ছে। API quota শেষ — নতুন key নাও অথবা কিছুক্ষণ পর চেষ্টা করো।'
+    : `ℹ️ ${reason}`;
 }
 
 /* Render word cards on screen */
