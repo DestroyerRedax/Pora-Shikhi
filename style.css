@@ -1,0 +1,719 @@
+/* ================================================
+   style.css — পড়া শিখি (Preschool Reading App)
+   Big text, bright colors, mobile-friendly
+   ================================================ */
+
+
+/* ---------- 1. GLOBAL RESET & BASE STYLES ---------- */
+
+* {
+  box-sizing: border-box;  /* padding doesn't break widths */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Warm, cheerful background with a subtle pattern */
+  background-color: #fff9f0;
+  background-image: radial-gradient(circle, #ffe4b5 1px, transparent 1px);
+  background-size: 28px 28px;
+
+  /* Bangla-friendly rounded font */
+  font-family: 'Hind Siliguri', 'Baloo Da 2', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+
+/* ---------- 2. PAGE SWITCHING LOGIC ---------- */
+
+/* Every section is hidden by default */
+.page {
+  display: none;
+  animation: fadeIn 0.4s ease;  /* smooth appearance */
+}
+
+/* Only the active page is visible */
+.page.active {
+  display: block;
+}
+
+/* Simple fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ---------- 3. HOME PAGE ---------- */
+
+.home-header {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+/* Big rainbow emoji at top */
+.title-emoji {
+  font-size: 64px;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* Main "পড়া শিখি" title */
+.main-title {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: #e64d00;
+  text-shadow: 3px 3px 0 #ffd700;  /* yellow shadow makes it pop */
+  line-height: 1.1;
+}
+
+/* Subtitle below the title */
+.subtitle {
+  font-size: 22px;
+  color: #7b3f00;
+  margin-top: 6px;
+}
+
+/* Container for 3 big navigation buttons */
+.home-buttons {
+  display: flex;
+  flex-direction: column;  /* stack vertically on mobile */
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Shared style for all 3 home buttons */
+.home-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+  padding: 22px 28px;
+  border: none;
+  border-radius: 24px;
+  font-size: 26px;
+  font-family: 'Baloo Da 2', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.2);  /* 3D push effect */
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* When a button is pressed, it "sinks" */
+.home-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+
+/* Button icon (emoji or letter) */
+.home-btn .btn-icon {
+  font-size: 36px;
+  min-width: 44px;
+  text-align: center;
+}
+
+/* Individual button colors */
+.btn-abcd    { background: linear-gradient(135deg, #ff6b35, #ff9f1c); }
+.btn-bangla  { background: linear-gradient(135deg, #2ec4b6, #1a8fe3); }
+.btn-practice{ background: linear-gradient(135deg, #e84393, #c945d6); }
+
+/* Row of stars at the bottom of home page */
+.stars-row {
+  text-align: center;
+  font-size: 30px;
+  padding: 10px;
+  letter-spacing: 8px;
+}
+
+.stars-row span {
+  display: inline-block;
+  animation: twinkle 1.2s infinite alternate;
+}
+
+/* Each star twinkles at a different time */
+.stars-row span:nth-child(2) { animation-delay: 0.2s; }
+.stars-row span:nth-child(3) { animation-delay: 0.4s; }
+.stars-row span:nth-child(4) { animation-delay: 0.6s; }
+.stars-row span:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes twinkle {
+  from { transform: scale(1);   opacity: 0.8; }
+  to   { transform: scale(1.3); opacity: 1;   }
+}
+
+
+/* ---------- 4. PAGE HEADER (top bar on inner pages) ---------- */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  font-size: 24px;
+  font-family: 'Baloo Da 2', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 0 0 20px 20px;  /* rounded bottom corners */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 20px;
+}
+
+/* Three header colors for three sections */
+.yellow-header { background: linear-gradient(90deg, #ff8c00, #ffd700); color: #4a2800; }
+.green-header  { background: linear-gradient(90deg, #00a878, #00d084); }
+.pink-header   { background: linear-gradient(90deg, #e84393, #c945d6); }
+
+/* Back button inside the header */
+.back-btn {
+  background: rgba(255,255,255,0.3);
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 16px;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  color: inherit;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+
+/* ---------- 5. LETTER CARDS GRID ---------- */
+
+/* Responsive grid: fills the screen width automatically */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 0 16px 30px;
+}
+
+/* Individual letter card */
+.letter-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #ddd;
+  border: 3px solid transparent;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+/* Wiggle animation when a card is tapped */
+.letter-card:active {
+  transform: scale(0.94);
+}
+
+/* Hover: card pops up slightly */
+.letter-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 #ccc;
+}
+
+/* The big letter shown on card */
+.card-letter {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* The smaller word or sound under the letter */
+.card-word {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+  display: block;
+}
+
+/* Rainbow border colors cycle through cards */
+.letter-card:nth-child(5n+1) { border-color: #ff6b35; }
+.letter-card:nth-child(5n+2) { border-color: #2ec4b6; }
+.letter-card:nth-child(5n+3) { border-color: #e84393; }
+.letter-card:nth-child(5n+4) { border-color: #ffd700; }
+.letter-card:nth-child(5n+5) { border-color: #9b5de5; }
+
+/* Letter color matches border for fun */
+.letter-card:nth-child(5n+1) .card-letter { color: #ff6b35; }
+.letter-card:nth-child(5n+2) .card-letter { color: #2ec4b6; }
+.letter-card:nth-child(5n+3) .card-letter { color: #e84393; }
+.letter-card:nth-child(5n+4) .card-letter { color: #cc9900; }
+.letter-card:nth-child(5n+5) .card-letter { color: #9b5de5; }
+
+
+/* ---------- 6. PRACTICE PAGE ---------- */
+
+.practice-container {
+  padding: 0 20px 40px;
+  text-align: center;
+}
+
+/* "Press the button" instruction */
+.practice-hint {
+  font-size: 20px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+/* Big "generate words" button */
+.generate-btn {
+  background: linear-gradient(135deg, #e84393, #c945d6);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 20px 40px;
+  font-size: 26px;
+  font-family: 'Baloo Da 2', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #a01f9e;
+  transition: transform 0.1s, box-shadow 0.1s;
+  margin-bottom: 30px;
+}
+
+.generate-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #a01f9e;
+}
+
+/* Loading spinner text */
+.spinner {
+  font-size: 22px;
+  color: #888;
+  margin-bottom: 20px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Error message box */
+.error-box {
+  background: #ffe0e0;
+  border: 2px solid #f88;
+  border-radius: 14px;
+  padding: 16px;
+  color: #c00;
+  font-size: 17px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Grid for word cards returned from Gemini */
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+/* Individual word card (returned from AI) */
+.word-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 12px;
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 0 #ddd;
+  border: 3px solid;
+  animation: popIn 0.3s ease backwards;
+  cursor: pointer;
+}
+
+/* Each word pops in with a tiny delay */
+.word-card:nth-child(1) { animation-delay: 0.05s; border-color: #ff6b35; color: #ff6b35; }
+.word-card:nth-child(2) { animation-delay: 0.10s; border-color: #2ec4b6; color: #2ec4b6; }
+.word-card:nth-child(3) { animation-delay: 0.15s; border-color: #e84393; color: #e84393; }
+.word-card:nth-child(4) { animation-delay: 0.20s; border-color: #cc9900; color: #cc9900; }
+.word-card:nth-child(5) { animation-delay: 0.25s; border-color: #9b5de5; color: #9b5de5; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Hide utility class */
+.hidden {
+  display: none !important;
+}
+
+
+/* ---------- 7. RESPONSIVE TWEAKS ---------- */
+
+/* On very small phones, reduce card size a bit */
+@media (max-width: 360px) {
+  .main-title   { font-size: 40px; }
+  .home-btn     { font-size: 22px; padding: 18px 20px; }
+  .card-letter  { font-size: 40px; }
+  .generate-btn { font-size: 22px; padding: 16px 28px; }
+}
+
+/* On tablets/desktops, show home buttons side by side */
+@media (min-width: 600px) {
+  .home-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .home-btn {
+    width: auto;
+    min-width: 260px;
+  }
+}
+
+/* ---------- PWA INSTALL BAR ---------- */
+.pwa-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #1a8fe3, #2ec4b6);
+  color: #fff;
+  border-radius: 20px;
+  padding: 14px 20px;
+  margin: 0 20px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: slideDown 0.5s ease;
+}
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+.pwa-install-btn {
+  background: #fff;
+  color: #1a8fe3;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.pwa-install-btn:active { transform: scale(0.95); }
+
+/* ---------- API KEY STATUS ---------- */
+.key-status {
+  background: #e8f8f0;
+  border: 2px solid #2ec4b6;
+  border-radius: 14px;
+  padding: 10px 18px;
+  font-size: 17px;
+  color: #00a878;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+/* ---------- API KEY ROW ---------- */
+.api-key-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.api-key-input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+  padding: 12px 16px;
+  border: 2px solid #c945d6;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: monospace;
+  outline: none;
+  background: #fff;
+}
+.api-key-input:focus { border-color: #e84393; box-shadow: 0 0 0 3px rgba(232,67,147,0.2); }
+.api-save-btn {
+  background: #c945d6;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.api-save-btn:hover { background: #a01fae; }
+
+
+/* ══════════════════════════════════════════
+   ইংরেজি শিখি — ENGLISH LEARNING SECTION
+══════════════════════════════════════════ */
+
+/* Orange-red English section header */
+.english-header {
+  background: linear-gradient(90deg, #c0392b, #e74c3c);
+}
+
+/* ── TAB BAR ── */
+.eng-tabs {
+  display: flex;
+  gap: 0;
+  background: #f0ece8;
+  border-radius: 16px;
+  margin: 0 16px 20px;
+  padding: 5px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.eng-tab {
+  flex: 1;
+  padding: 11px 6px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.eng-tab.active {
+  background: #fff;
+  color: #c0392b;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* ── TAB CONTENT ── */
+.eng-tab-content { display: none; padding: 0 16px 30px; }
+.eng-tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+/* ── LETTER CARD (big card with colored left panel) ── */
+.eng-letter-list { display: flex; flex-direction: column; gap: 16px; }
+
+.eng-letter-card {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.eng-letter-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+.eng-letter-card:active { transform: scale(0.97); }
+
+.eng-card-top {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Colored left block showing the letter */
+.eng-card-letter-block {
+  min-width: 100px;
+  background: #e07b54;   /* salmon-orange default; overridden per card */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 10px;
+  gap: 4px;
+}
+
+.eng-card-letter-block .big-letter {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.eng-card-letter-block .letter-name {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 600;
+}
+
+/* Right side: sounds */
+.eng-card-right {
+  flex: 1;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.eng-card-right .sound-label {
+  font-size: 13px;
+  color: #999;
+  font-weight: 600;
+}
+
+.eng-card-right .sound-text {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #c0392b;
+  line-height: 1.1;
+}
+
+/* Bottom examples strip */
+.eng-card-bottom {
+  background: #fafafa;
+  border-top: 1px solid #f0ece8;
+  padding: 10px 16px;
+}
+
+.eng-card-bottom .example-label {
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.eng-card-bottom .example-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ── READING RULES CARDS ── */
+.eng-rules-list { display: flex; flex-direction: column; gap: 16px; }
+
+.eng-rule-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.eng-rule-card:active { transform: scale(0.97); }
+
+.eng-rule-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.eng-rule-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fff0eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.eng-rule-title {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #c0392b;
+}
+
+.eng-rule-desc {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.eng-rule-examples-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e07b54;
+  margin-bottom: 4px;
+}
+
+.eng-rule-examples {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #c0392b;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ── PRACTICE PAGE RESTYLED ── */
+.section-title {
+  font-family: 'Baloo Da 2', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #e64d00;
+  margin-bottom: 12px;
+}
+
+.practice-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border: 2px dashed #f0ddd0;
+}
+
+/* Reading output paragraph */
+.reading-output {
+  margin-top: 20px;
+  background: #fff8f0;
+  border-radius: 14px;
+  padding: 18px;
+  font-size: 20px;
+  line-height: 1.8;
+  color: #333;
+  font-weight: 600;
+  border: 2px solid #ffd700;
+}
+
+.reading-btn {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 32px;
+  font-size: 20px;
+  font-family: 'Baloo Da 2', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #922b21;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.reading-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #922b21; }
+.reading-btn:hover  { transform: translateY(-2px); }
+
+/* btn-english for home page */
+.btn-english { background: linear-gradient(135deg, #c0392b, #e07b54); }
+
+/* Digraph block uses crimson accent */
+.digraph-block { background: #c0392b; }
